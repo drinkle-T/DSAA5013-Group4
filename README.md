@@ -1,5 +1,11 @@
 # EDC
 
+
+
+**This project reproduces the core algorithms and experimental results of the paper "Elucidating the Design Space of Dataset Condensation"**
+
+---
+
 Offical Implementation of our research:
 
 > **[Elucidating the Design Space of Dataset Condensation](https://arxiv.org/abs/2404.13733) [NeurIPS 2024 🚀] ** <br>
