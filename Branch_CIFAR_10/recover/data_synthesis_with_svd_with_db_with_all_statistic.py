@@ -55,7 +55,7 @@ def main_worker(gpu, ngpus_per_node, args, model_teacher, model_verifier, ipc_id
         print(_model_teacher)
         for name, module in _model_teacher.named_modules():
             if isinstance(module, nn.BatchNorm2d):
-                loss_r_feature_layers[i].append(BNFeatureHook(module,training_momentum=args.training_momentum))
+                loss_r_feature_layers[i].append(BNFeatureHook(module,training_momentum=args.training_momentum,name=name))
             elif isinstance(module, nn.Conv2d):
                 _hook_module = ConvFeatureHook(module, save_path=args.statistic_path,
                                                name=str(_model_teacher.__class__.__name__) + "=" + name,
@@ -85,8 +85,11 @@ def main_worker(gpu, ngpus_per_node, args, model_teacher, model_verifier, ipc_id
 
         with torch.no_grad():
             for j, _model_teacher in enumerate(model_teacher):
-                for i, (data, _) in tqdm(enumerate(train_loader)):
+                for i, (data, targets) in tqdm(enumerate(train_loader)):
                     data = data.cuda(gpu)
+                    targets = targets.cuda(gpu)
+                    for _loss_t_feature_layer in loss_r_feature_layers[j]:
+                        _loss_t_feature_layer.set_label(targets)
                     _ = _model_teacher(data)
                 print(f"Compute {_model_teacher}")
                 for _loss_t_feature_layer in loss_r_feature_layers[j]:
@@ -148,6 +151,8 @@ def main_worker(gpu, ngpus_per_node, args, model_teacher, model_verifier, ipc_id
             # forward pass
             optimizer.zero_grad()
             id = counter % len(model_teacher)
+            for mod in loss_r_feature_layers[id]:
+                mod.set_label(targets)
             counter += 1
             sub_outputs = model_teacher[id](inputs_jit)
             # R_cross classification loss

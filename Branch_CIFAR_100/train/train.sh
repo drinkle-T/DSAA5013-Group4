@@ -12,4 +12,4 @@ CUDA_VISIBLE_DEVICES=0 python direct_train.py \
     --mix-type 'cutmix' --weight-decay 0.0005 \
     --output-dir ./save/final_RN18_fkd/ \
     --train-dir ../recover/syn_data/EDC_CIFAR_100_Recover_IPC_10 \
-    --val-dir '/data/cifar100/train/'
+    --val-dir '/mnt/raid/tangzhenheng/datasets/cifar100/val/'

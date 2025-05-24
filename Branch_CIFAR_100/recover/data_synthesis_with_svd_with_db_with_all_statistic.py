@@ -55,7 +55,7 @@ def main_worker(gpu, ngpus_per_node, args, model_teacher, model_verifier, ipc_id
         print(_model_teacher)
         for name, module in _model_teacher.named_modules():
             if isinstance(module, nn.BatchNorm2d):
-                loss_r_feature_layers[i].append(BNFeatureHook(module,training_momentum=args.training_momentum))
+                loss_r_feature_layers[i].append(BNFeatureHook(module,training_momentum=args.training_momentum,name=name))
             elif isinstance(module, nn.Conv2d):
                 _hook_module = ConvFeatureHook(module, save_path=args.statistic_path,
                                                name=str(_model_teacher.__class__.__name__) + "=" + name,

@@ -1,5 +1,5 @@
 CUDA_VISIVLE_DEVICES=0 python generate_soft_label_with_db.py \
-    -b 100 \
+    -b 25 \
     -j 8 \
     --epochs 1000 \
     --fkd-seed 42 \
@@ -10,4 +10,4 @@ CUDA_VISIVLE_DEVICES=0 python generate_soft_label_with_db.py \
     --fkd-path ../relabel/FKD_cutmix_fp16FKD_IPC_10 \
     --mode 'fkd_save' \
     --mix-type 'cutmix' \
-    --data ../recover/syn_data/GVBSM_CIFAR_10_Recover_IPC_10
+    --data ../recover/syn_data/EDC_CIFAR_10_Recover_IPC_10_backbone_8

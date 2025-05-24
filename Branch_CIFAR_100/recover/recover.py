@@ -95,13 +95,14 @@ def main_worker(gpu, ngpus_per_node, args, model_teacher, model_verifier, ipc_id
 
     sub_batch_size = int(batch_size // ngpus_per_node)
 
-    initial_img_cache = PreImgPathCache(args.initial_img_dir,transforms=transforms.Compose([
-                                                             transforms.Resize((32,32)),
-                                                             transforms.RandomHorizontalFlip(),
-                                                             transforms.ToTensor(),
-                                                              transforms.Normalize([0.5071, 0.4867, 0.4408],
-                                                                                     [0.2675, 0.2565, 0.2761])],
-                                                             ))
+    if args.initial_img_dir != "None":
+        initial_img_cache = PreImgPathCache(args.initial_img_dir,transforms=transforms.Compose([
+                                                                transforms.Resize((32,32)),
+                                                                transforms.RandomHorizontalFlip(),
+                                                                transforms.ToTensor(),
+                                                                transforms.Normalize([0.5071, 0.4867, 0.4408],
+                                                                                        [0.2675, 0.2565, 0.2761])],
+                                                                ))
     if args.category_aware == "local":
         original_img_cache = PreImgPathCache(os.path.join(args.train_data_path,"train"), transforms=transforms.Compose([
                                                                 transforms.Resize((32,32)),
@@ -167,7 +168,7 @@ def main_worker(gpu, ngpus_per_node, args, model_teacher, model_verifier, ipc_id
             continue
         print(f"In GPU {gpu}, targets is set as: \n{targets}\n, ipc_ids is set as: \n{ipc_ids}")
 
-        if args.initial_img_dir is not None:
+        if args.initial_img_dir != 'None':
             inputs = torch.stack([initial_img_cache.random_img_sample(_target) for _target in targets.tolist()],0).to(f'cuda:{gpu}').to(data_type)
             inputs.requires_grad_(True)
         else:
@@ -381,8 +382,10 @@ def main_syn():
     if not os.path.exists(args.syn_data_path):
         os.makedirs(args.syn_data_path)
 
-    aux_teacher = ["ResNet18", "ConvNetW128", "MobileNetV2", "WRN_16_2", "ShuffleNetV2_0_5",
-                   "ConvNetD1","ConvNetD2","ConvNetW32"]
+    # aux_teacher = ["ResNet18", "ConvNetW128", "MobileNetV2", "WRN_16_2", "ShuffleNetV2_0_5",
+    #                "ConvNetD1","ConvNetD2","ConvNetW32"]
+        
+    aux_teacher = ["ResNet18", "MobileNetV2", "ShuffleNetV2_0_5", "WRN_16_2", "ConvNetW128"]
     args.aux_teacher = aux_teacher
     model_teacher = []
     for name in aux_teacher:

@@ -25,7 +25,7 @@ from utils import *
 import models as ti_models
 from baseline import get_network as ti_get_network
 
-
+print(12)
 class ApplyTransformToPair:
     def __init__(self, transform):
         self.transform = transform
@@ -135,15 +135,16 @@ def main_worker(gpu, ngpus_per_node, args, model_teacher, model_verifier, ipc_id
 
     sub_batch_size = int(batch_size // ngpus_per_node)
 
-    initial_img_cache = PreImgPathCache(args.initial_img_dir,transforms=transforms.Compose([
-                                                             transforms.Resize((32,32)),
-                                                             transforms.RandomHorizontalFlip(),
-                                                             transforms.ToTensor(),
-                                                              transforms.Normalize([0.5071, 0.4867, 0.4408],
-                                                                                     [0.2675, 0.2565, 0.2761])],
-                                                             ))
+    if args.initial_img_dir != "None":
+        initial_img_cache = PreImgPathCache(args.initial_img_dir,transforms=transforms.Compose([
+                                                                transforms.Resize((32,32)),
+                                                                transforms.RandomHorizontalFlip(),
+                                                                transforms.ToTensor(),
+                                                                transforms.Normalize([0.5071, 0.4867, 0.4408],
+                                                                                      [0.2675, 0.2565, 0.2761])],
+                                                                ))
     if args.category_aware == "local":
-        original_img_cache = PreImgPathCache(os.path.join(args.train_data_path,"train"), transforms=transforms.Compose([
+        original_img_cache = PreImgPathCache(os.path.join(args.train_data_path), transforms=transforms.Compose([
                                                                 transforms.Resize((32,32)),
                                                                 transforms.RandomHorizontalFlip(),
                                                                 transforms.ToTensor(),
@@ -207,7 +208,7 @@ def main_worker(gpu, ngpus_per_node, args, model_teacher, model_verifier, ipc_id
             continue
         print(f"In GPU {gpu}, targets is set as: \n{targets}\n, ipc_ids is set as: \n{ipc_ids}")
 
-        if args.initial_img_dir is not None:
+        if args.initial_img_dir != "None":
             inputs = torch.stack([initial_img_cache.random_img_sample(_target) for _target in targets.tolist()],0).to(f'cuda:{gpu}').to(data_type)
             inputs.requires_grad_(True)
         else:

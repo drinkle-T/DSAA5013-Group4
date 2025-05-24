@@ -121,6 +121,7 @@ class BNFeatureHook():
         if module is not None and name is not None:
             self.hook = module.register_forward_hook(self.post_hook_fn)
         else:
+            print(name, module)
             raise ModuleNotFoundError("module and name can not be None!")
         self.dd_var = 0.
         self.dd_mean = 0.

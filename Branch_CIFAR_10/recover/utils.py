@@ -223,6 +223,10 @@ class BNFeatureHook():
                     self.dd_mean = self.momentum * self.dd_mean + (1 - self.momentum) * mean
             r_feature = (torch.norm(module.running_var.data - (self.dd_var + var - var.detach()), 2) + \
                         torch.norm(module.running_mean.data - (self.dd_mean + mean - mean.detach()), 2)) * 0.5
+            print(self.targets.long())
+            print(self.category_running_dd_var_list)
+
+
             category_dd_var = self.category_running_dd_var_list[self.targets.long()].mean(0)
             category_dd_mean = self.category_running_dd_mean_list[self.targets.long()].mean(0)
             r_feature += (torch.norm(category_dd_var - (self.dd_var + var - var.detach()), 2) + \

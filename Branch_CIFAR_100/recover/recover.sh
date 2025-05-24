@@ -5,6 +5,6 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 python recover.py \
     --lr 0.05 --drop-rate 0.0 \
     --ipc-number 10 --training-momentum 0.8 \
     --iteration 2000 \
-    --train-data-path  /data/cifar100/train/ \
-    --r-loss 0.01 --initial-img-dir /data/cifar100/train/ \
+    --train-data-path  /mnt/raid/tangzhenheng/datasets/cifar100 \
+    --r-loss 0.01 --initial-img-dir "None" \
     --verifier --store-best-images --gpu-id 0,1,2,3
